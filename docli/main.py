@@ -23,7 +23,7 @@ class DOcliBaseController(controller.CementBaseController):
 
 try:
     # create the application
-    app = foundation.CementApp('docli', base_controller=MyAppBaseController)
+    app = foundation.CementApp('docli', base_controller=DOcliBaseController)
 
     # register non-base controllers
     handler.register(digitalocean.Droplets)

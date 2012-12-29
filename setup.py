@@ -9,5 +9,5 @@ setup(
     author='clone1018',
     author_email='luke@axxim.net',
     description='Digital Ocean Command Line Tool',
-    requires=['cement','requests']
+    requires=['cement','requests','prettytable']
 )

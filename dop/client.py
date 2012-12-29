@@ -11,6 +11,7 @@ This module implements the Digital Ocean API.
 """
 
 import requests
+import json
 
 API_HOST = 'api.digitalocean.com'
 API_PORT = 80
@@ -334,8 +335,8 @@ class Client(object):
         return ssh_key
 
     def request(self, target, method='GET', params={}):
-        assert method in ['GET', 'POST'], \
-            "Only 'GET' 'POST' are allowed."
+        assert method in ['GET', 'POST'],\
+        "Only 'GET' 'POST' are allowed."
 
         headers = {
             'User-Agent': 'dop/client'
@@ -354,7 +355,7 @@ class Client(object):
 
         if response.status_code == 200:
             if response.json:
-                json = response.json
+                json = response.json()
                 error_msg = json.get('error_message', None)
                 if error_msg:
                     raise DOPException(error_msg)
@@ -372,7 +373,6 @@ class Client(object):
         protocol = "https://" if self.secure else "http://"
         base_full_url = "%s%s%s%s" % (protocol, self.host, port, slug)
         return base_full_url
-
 
 class DOPException(Exception):
     pass

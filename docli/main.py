@@ -1,7 +1,7 @@
 __author__ = 'clone1018'
 
 from cement.core import foundation, controller, handler
-import digitalocean
+from docli import digitalocean
 
 # define application controllers
 class DOcliBaseController(controller.CementBaseController):
@@ -13,24 +13,27 @@ class DOcliBaseController(controller.CementBaseController):
             (['--base-opt'], dict(help="option under base controller")),
             ]
 
-    @controller.expose(help="base controller default command", hide=True)
-    def default(self):
-        print "Inside MyAppBaseController.default()"
+def run():
+    try:
+        # create the application
+        app = foundation.CementApp('docli',config_files=['~/.docli.conf'], base_controller=DOcliBaseController)
 
-    @controller.expose(help="another base controller command")
-    def command1(self):
-        print "Inside MyAppBaseController.command1()"
+        # register non-base controllers
+        handler.register(digitalocean.Droplets)
 
-try:
-    # create the application
-    app = foundation.CementApp('docli', base_controller=DOcliBaseController)
+        # setup the application
+        app.setup()
 
-    # register non-base controllers
-    handler.register(digitalocean.Droplets)
+        if not app.config.has_section('digitalocean'):
+            app.config.add_section('digitalocean')
 
-    # setup the application
-    app.setup()
+            if not app.config.has_key('digitalocean', 'client_id'):
+                app.config.set('digitalocean','client_id', True)
 
-    app.run()
-finally:
-    app.close()
+                print 'Please set your api key and client id in ~/.docli.conf'
+                app.close()
+                exit()
+
+        app.run()
+    finally:
+        app.close()
